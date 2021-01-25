@@ -16,10 +16,10 @@ class HamiltonianThread extends Thread {
     @Override
     public void run() {
         HamiltonianCycle hamiltonian = new HamiltonianCycle();
-        int[][] graph = hamiltonianMultithreaded.createMatrix(numVertices, threadNum);
+        int[][] graph = HamiltonianMultithreaded.createMatrix(numVertices, threadNum);
         if (!hamiltonian.hamCycle(graph)) {
             List<Edge> edges;
-            for (int vertex; vertex < numVertices; vertex++) {
+            for (int vertexNum; vertexNum < numVertices; vertexNum++) {
                 for (int i; i < graph.length; i++) {
                     for (int j; j < graph.length; j++) {
                         if (graph[i][j] == 1) {
@@ -31,7 +31,7 @@ class HamiltonianThread extends Thread {
                         Graph g = new Graph(edges, numVertices);
                 
                         // starting node
-                        int start = vertex;
+                        int start = vertexNum;
                 
                         // add starting node to the path
                         List<Integer> path = new ArrayList<>();
@@ -41,7 +41,7 @@ class HamiltonianThread extends Thread {
                         boolean[] visited = new boolean[numVertices];
                         visited[start] = true;
                 
-                        if (!Hamiltonianpaths.checkHamiltonianPaths(g, start, visited, path, numVertices)); {
+                        if (!HamiltonianPaths.checkHamiltonianPaths(g, start, visited, path, numVertices)); {
                             ans = false;
                         }                    
                     }
