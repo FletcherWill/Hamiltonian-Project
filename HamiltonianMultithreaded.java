@@ -131,6 +131,60 @@ public class HamiltonianMultithreaded {
 		}
 		return graph;
     }
+    public static void main(String[] args) {
+        try {
+            System.out.println(HamiltonianMultithreaded.hamiltonian(4));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        /*
+        HamiltonianCycle hamiltonian = new HamiltonianCycle();
+        int[][] graph = new int[4][4];
+        int[] list = new int[4];
+        list[0]=0;
+        list[1]=0;
+        list[2]=0;
+        list[3]=0;
+        graph[0] = list;
+        graph[1] = list;
+        graph[2] = list;
+        graph[3] = list;
+        int numVertices = 4;
+        if (!hamiltonian.hamCycle(graph)) {
+            List<Edge> edges = new ArrayList<Edge>();
+            for (int vertex = 0; vertex < numVertices; vertex++) {
+                for (int i = 0; i < graph.length; i++) {
+                    for (int j = 0; j < graph.length; j++) {
+                        if (graph[i][j] == 1) {
+                            edges.add(new Edge(i,j));
+                        }
+                        // Set number of vertices in the graph
+                
+                        // create a graph from edges
+                        Graph g = new Graph(edges, numVertices);
+                
+                        // starting node
+                        int start = vertex;
+                
+                        // add starting node to the path
+                        List<Integer> path = new ArrayList<>();
+                        path.add(start);
+                
+                        // mark start node as visited
+                        boolean[] visited = new boolean[numVertices];
+                        visited[start] = true;
+                
+                        if (!checkHamiltonianPaths(g, start, visited, path, numVertices)); {
+                            System.out.println("false");
+                        }                    
+                    }
+                }
+            }
+        } else {
+            System.out.println("false");
+        }
+        System.out.println("true"); */
+    } 
 }
 
 
@@ -384,54 +438,4 @@ class HamiltonianPaths
  
         printAllHamiltonianPaths(g, start, visited, path, N);
     } */
-
-    public static void main(String[] args) {
-        //System.out.println(HamiltonianMultithreaded.hamiltonian(4));
-        HamiltonianCycle hamiltonian = new HamiltonianCycle();
-        int[][] graph = new int[4][4];
-        int[] list = new int[4];
-        list[0]=0;
-        list[1]=0;
-        list[2]=0;
-        list[3]=0;
-        graph[0] = list;
-        graph[1] = list;
-        graph[2] = list;
-        graph[3] = list;
-        int numVertices = 4;
-        if (!hamiltonian.hamCycle(graph)) {
-            List<Edge> edges = new ArrayList<Edge>();
-            for (int vertex = 0; vertex < numVertices; vertex++) {
-                for (int i = 0; i < graph.length; i++) {
-                    for (int j = 0; j < graph.length; j++) {
-                        if (graph[i][j] == 1) {
-                            edges.add(new Edge(i,j));
-                        }
-                        // Set number of vertices in the graph
-                
-                        // create a graph from edges
-                        Graph g = new Graph(edges, numVertices);
-                
-                        // starting node
-                        int start = vertex;
-                
-                        // add starting node to the path
-                        List<Integer> path = new ArrayList<>();
-                        path.add(start);
-                
-                        // mark start node as visited
-                        boolean[] visited = new boolean[numVertices];
-                        visited[start] = true;
-                
-                        if (!checkHamiltonianPaths(g, start, visited, path, numVertices)); {
-                            System.out.println("false");
-                        }                    
-                    }
-                }
-            }
-        } else {
-            System.out.println("false");
-        }
-        System.out.println("true");
-    }
 }
