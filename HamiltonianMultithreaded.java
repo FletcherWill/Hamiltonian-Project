@@ -87,16 +87,48 @@ public class HamiltonianMultithreaded {
         }
         return ans;
     }
+    
+    public static String padLeftZeros(String inputString, int length) {
+		if (inputString.length() >= length) {
+			return inputString;
+		}
+		StringBuilder sb = new StringBuilder();
+		while (sb.length() < length - inputString.length()) {
+			sb.append('0');
+		}
+		sb.append(inputString);
+
+		return sb.toString();
+	  }
+    
     public static int[][] createMatrix(int numVertices, int id) {
-        int[][] graph = new boolean[numVertices][numVertices];
-        for (int i = 0; i < numVertices; i++) {
-            graph[i] = new boolean[numVertices];
-        }
-        for (int i = 0; i < numVertices - 1; i++) {
-            graph[i][i+1] = true;
-            graph[i+1][i] = true;
-            //graph[0][numVertices-1] = false, graph[numVertices-1][0] = false
-        }
+        int[][] graph = new int[numVertices][numVertices];
+		for (int i = 0; i < numVertices; i++) {
+			graph[i] = new int[numVertices];
+		}
+	
+		for (int i = 0; i < numVertices - 1; i++) {
+			graph[i][i+1] = 1;
+		  graph[i+1][i] = 1;
+		  //graph[0][numVertices-1] = false, graph[numVertices-1][0] = false
+		}
+	
+		int stringLength = (numVertices*numVertices-3*numVertices)/2;
+		String binary = Integer.toBinaryString(id);
+		binary = padLeftZeros(binary, stringLength);
+		int insert = stringLength - numVertices + 3;
+		binary = binary.substring(0, insert) + "0" + binary.substring(insert);
+		stringLength++;
+		System.out.println(binary);
+
+		int k = 0;
+		for (int i = 0; i < numVertices - 2; i++ ) {
+		  for (int j = i + 2; j < numVertices; j++) {
+			graph[i][j] = (int)(binary.charAt(stringLength - k - 1)) - 48;
+			graph[j][i] = (int)(binary.charAt(stringLength - k - 1)) - 48;
+			k++;
+		  }
+		}
     }
 }
 
