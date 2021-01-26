@@ -15,7 +15,7 @@ class HamiltonianThread extends Thread {
 
     @Override
     public void run() {
-        HamiltonianCycle hamiltonian = new HamiltonianCycle();
+        HamiltonianCycle hamiltonian = new HamiltonianCycle(this.numVertices);
         int[][] graph = HamiltonianMultithreaded.createMatrix(numVertices, threadNum);
         if (!hamiltonian.hamCycle(graph)) {
             List<Edge> edges = new ArrayList<Edge>();
@@ -77,13 +77,19 @@ public class HamiltonianMultithreaded {
             ts[i].start();
         }
 
+        int counterExample = -1;
         // Wait for the threads to finish and sum their results.
         for (int i = 0; i < numThreads; i++) {
             ts[i].join();
             if (ts[i].getAns() == true) {
                 ans = true;
                 System.out.println(Arrays.deepToString(createMatrix(numVertices, i)));
+                counterExample = i;
             }
+        }
+        if (ans) {
+            System.out.println(Arrays.deepToString(createMatrix(numVertices, counterExample)));
+            System.out.println(counterExample);
         }
         return ans;
     }
@@ -134,7 +140,7 @@ public class HamiltonianMultithreaded {
     }
     public static void main(String[] args) {
         try {
-            System.out.println(HamiltonianMultithreaded.hamiltonian(8));
+            System.out.println(HamiltonianMultithreaded.hamiltonian(7));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -194,8 +200,12 @@ public class HamiltonianMultithreaded {
 using backtracking */
 class HamiltonianCycle 
 { 
-	final int V = 5; 
-	int path[]; 
+	int V; 
+    int path[];
+    
+    public HamiltonianCycle(int V) {
+        this.V = V;
+    }
 
 	/* A utility function to check if the vertex v can be 
 	added at index 'pos'in the Hamiltonian Cycle 
