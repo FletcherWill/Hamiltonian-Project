@@ -43,7 +43,7 @@ class HamiltonianThread extends Thread {
                 
                         if (!HamiltonianPaths.checkHamiltonianPaths(g, start, visited, path, numVertices)); {
                             ans = false;
-                        }                    
+                        }               
                     }
                 }
             }
@@ -82,7 +82,7 @@ public class HamiltonianMultithreaded {
             ts[i].join();
             if (ts[i].getAns() == true) {
                 ans = true;
-                System.out.println(createMatrix(numVertices, i));
+                System.out.println(Arrays.deepToString(createMatrix(numVertices, i)));
             }
         }
         return ans;
@@ -111,7 +111,8 @@ public class HamiltonianMultithreaded {
 			graph[i][i+1] = 1;
 		  graph[i+1][i] = 1;
 		  //graph[0][numVertices-1] = false, graph[numVertices-1][0] = false
-		}
+        }
+        //System.out.println(graph);
 	
 		int stringLength = (numVertices*numVertices-3*numVertices)/2;
 		String binary = Integer.toBinaryString(id);
@@ -119,7 +120,7 @@ public class HamiltonianMultithreaded {
 		int insert = stringLength - numVertices + 3;
 		binary = binary.substring(0, insert) + "0" + binary.substring(insert);
 		stringLength++;
-		System.out.println(binary);
+		//System.out.println(binary);
 
 		int k = 0;
 		for (int i = 0; i < numVertices - 2; i++ ) {
@@ -133,7 +134,7 @@ public class HamiltonianMultithreaded {
     }
     public static void main(String[] args) {
         try {
-            System.out.println(HamiltonianMultithreaded.hamiltonian(4));
+            System.out.println(HamiltonianMultithreaded.hamiltonian(8));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -287,9 +288,8 @@ class HamiltonianCycle
 
 	/* A utility function to print solution */
 	void printSolution(int path[]) 
-	{ 
-		System.out.println("Solution Exists: Following" + 
-						" is one Hamiltonian Cycle"); 
+	{
+		System.out.println("Solution Exists: Following" + " is one Hamiltonian Cycle"); 
 		for (int i = 0; i < V; i++) 
 			System.out.print(" " + path[i] + " "); 
 
