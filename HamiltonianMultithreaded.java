@@ -18,10 +18,10 @@ class HamiltonianThread extends Thread {
         HamiltonianCycle hamiltonian = new HamiltonianCycle();
         int[][] graph = HamiltonianMultithreaded.createMatrix(numVertices, threadNum);
         if (!hamiltonian.hamCycle(graph)) {
-            List<Edge> edges;
-            for (int vertexNum; vertexNum < numVertices; vertexNum++) {
-                for (int i; i < graph.length; i++) {
-                    for (int j; j < graph.length; j++) {
+            List<Edge> edges = new ArrayList<Edge>();
+            for (int vertexNum = 0; vertexNum < numVertices; vertexNum++) {
+                for (int i = 0; i < graph.length; i++) {
+                    for (int j = 0; j < graph.length; j++) {
                         if (graph[i][j] == 1) {
                             edges.add(new Edge(i,j));
                         }
@@ -129,6 +129,7 @@ public class HamiltonianMultithreaded {
 			k++;
 		  }
 		}
+		return graph;
     }
 }
 
@@ -399,10 +400,10 @@ class HamiltonianPaths
         graph[3] = list;
         int numVertices = 4;
         if (!hamiltonian.hamCycle(graph)) {
-            List<Edge> edges;
-            for (int vertex; vertex < numVertices; vertex++) {
-                for (int i; i < graph.length; i++) {
-                    for (int j; j < graph.length; j++) {
+            List<Edge> edges = new ArrayList<Edge>();
+            for (int vertex = 0; vertex < numVertices; vertex++) {
+                for (int i = 0; i < graph.length; i++) {
+                    for (int j = 0; j < graph.length; j++) {
                         if (graph[i][j] == 1) {
                             edges.add(new Edge(i,j));
                         }
