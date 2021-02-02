@@ -16,44 +16,46 @@ class HamiltonianThread extends Thread {
     @Override
     public void run() {
         HamiltonianCycle hamiltonian = new HamiltonianCycle(this.numVertices);
-        int[][] graph = HamiltonianMultithreaded.createMatrix(numVertices, threadNum);
+        int[][] graph = HamiltonianMultithreaded.createMatrix(this.numVertices, threadNum);
         if (!hamiltonian.hamCycle(graph)) {
             List<Edge> edges = new ArrayList<Edge>();
-            for (int vertexNum = 0; vertexNum < numVertices; vertexNum++) {
-                for (int i = 0; i < graph.length; i++) {
-                    for (int j = 0; j < graph.length; j++) {
-                        if (graph[i][j] == 1) {
-                            edges.add(new Edge(i,j));
-                        }
-                        // Set number of vertices in the graph
-                
-                        // create a graph from edges
-                        Graph g = new Graph(edges, numVertices);
-                
-                        // starting node
-                        int start = vertexNum;
-                
-                        // add starting node to the path
-                        List<Integer> path = new ArrayList<>();
-                        path.add(start);
-                
-                        // mark start node as visited
-                        boolean[] visited = new boolean[numVertices];
-                        visited[start] = true;
-                
-                        if (!HamiltonianPaths.checkHamiltonianPaths(g, start, visited, path, numVertices)); {
-                            ans = false;
-                        }               
+            //add edges
+            for (int i = 0; i < graph.length; i++) {
+                for (int j = 0; j < graph.length; j++) {
+                    if (graph[i][j] == 1) {
+                        edges.add(new Edge(i,j));
                     }
                 }
             }
+            for (int vertexNum = 0; vertexNum < numVertices; vertexNum++) {
+                
+                // Set number of vertices in the graph
+        
+                // create a graph from edges
+                Graph g = new Graph(edges, numVertices);
+        
+                // starting node
+                int start = vertexNum;
+        
+                // add starting node to the path
+                List<Integer> path = new ArrayList<>();
+                path.add(start);
+        
+                // mark start node as visited
+                boolean[] visited = new boolean[numVertices];
+                visited[start] = true;
+                
+                if (!HamiltonianPaths.checkHamiltonianPaths(g, start, visited, path, numVertices)) {
+                    this.ans = false;
+                }               
+            }
         } else {
-            ans = false;
+            this.ans = false;
         }
     }
 
     public boolean getAns() {
-        return ans;
+        return this.ans;
     }
 }
 
@@ -140,7 +142,7 @@ public class HamiltonianMultithreaded {
     }
     public static void main(String[] args) {
         try {
-            System.out.println(HamiltonianMultithreaded.hamiltonian(7));
+            System.out.println(HamiltonianMultithreaded.hamiltonian(6));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -288,7 +290,7 @@ class HamiltonianCycle
 		path[0] = 0; 
 		if (hamCycleUtil(graph, path, 1) == false) 
 		{ 
-			System.out.println("\nSolution does not exist"); 
+			//System.out.println("\nSolution does not exist"); 
 			return false; 
 		} 
 
@@ -298,14 +300,14 @@ class HamiltonianCycle
 
 	/* A utility function to print solution */
 	void printSolution(int path[]) 
-	{
+	{ /*
 		System.out.println("Solution Exists: Following" + " is one Hamiltonian Cycle"); 
 		for (int i = 0; i < V; i++) 
 			System.out.print(" " + path[i] + " "); 
 
 		// Let us print the first vertex again to show the 
 		// complete cycle 
-		System.out.println(" " + path[0] + " "); 
+		System.out.println(" " + path[0] + " "); */
 	} 
 /*
 	// driver program to test above function 
@@ -391,6 +393,7 @@ class HamiltonianPaths
     public static boolean checkHamiltonianPaths(Graph g, int v, boolean[] visited, List<Integer> path, int N) {
         // if all the vertices are visited, then
         // hamiltonian path exists
+
         if (path.size() == N) {
             // print hamiltonian path
             return true;
@@ -420,32 +423,4 @@ class HamiltonianPaths
         }
     return false;
     }
-/*
-    public static void main(String[] args)
-    {
-        // List of graph edges as per above diagram
-        List<Edge> edges = Arrays.asList(
-                new Edge(0, 1), new Edge(0, 2), new Edge(0, 3),
-                new Edge(1, 2), new Edge(1, 3), new Edge(2, 3)
-        );
- 
-        // Set number of vertices in the graph
-        final int N = 4;
- 
-        // create a graph from edges
-        Graph g = new Graph(edges, N);
- 
-        // starting node
-        int start = 0;
- 
-        // add starting node to the path
-        List<Integer> path = new ArrayList<>();
-        path.add(start);
- 
-        // mark start node as visited
-        boolean[] visited = new boolean[N];
-        visited[start] = true;
- 
-        printAllHamiltonianPaths(g, start, visited, path, N);
-    } */
 }
