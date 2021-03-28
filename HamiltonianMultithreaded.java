@@ -3,23 +3,37 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.lang.*;
+import java.io.*;
 
+/**
+ * This class represents an object that checks a single graph to see if it is n-strung with no Hamiltonian cycle.
+ * Graphs are passed in via their unique threadID. Each instance of this class is ran in a unique thread.
+ */
 class HamiltonianThread extends Thread {
     private int numVertices, threadNum;
     private boolean ans = true;
 
+    /**
+     * Initializer for HamiltonianThread class.
+     * @param numVertices
+     * @param i
+     */
     public HamiltonianThread(int numVertices, int i) {
         this.numVertices = numVertices;
         this.threadNum = i;
     }
 
+    /**
+     * This is the function called when the thread is started. This function takes the thread ID, 
+     * uses createMatrix function to generate the corresponding graph and then checks it for 
+     * numVertices-strungness and having no Hamiltonian cycle.
+     */
     @Override
     public void run() {
         HamiltonianCycle hamiltonian = new HamiltonianCycle(this.numVertices);
         int[][] graph = HamiltonianMultithreaded.createMatrix(this.numVertices, threadNum);
         if (!hamiltonian.hamCycle(graph)) {
             List<Edge> edges = new ArrayList<Edge>();
-            //add edges
             for (int i = 0; i < graph.length; i++) {
                 for (int j = 0; j < graph.length; j++) {
                     if (graph[i][j] == 1) {
@@ -28,23 +42,12 @@ class HamiltonianThread extends Thread {
                 }
             }
             for (int vertexNum = 0; vertexNum < numVertices; vertexNum++) {
-                
-                // Set number of vertices in the graph
-        
-                // create a graph from edges
                 Graph g = new Graph(edges, numVertices);
-        
-                // starting node
                 int start = vertexNum;
-        
-                // add starting node to the path
                 List<Integer> path = new ArrayList<>();
                 path.add(start);
-        
-                // mark start node as visited
                 boolean[] visited = new boolean[numVertices];
                 visited[start] = true;
-                
                 if (!HamiltonianPaths.checkHamiltonianPaths(g, start, visited, path, numVertices)) {
                     this.ans = false;
                 }               
@@ -54,17 +57,24 @@ class HamiltonianThread extends Thread {
         }
     }
 
+    /**
+     * Returns the answer set by the run method.
+     * @return ans
+     */
     public boolean getAns() {
         return this.ans;
     }
 }
 
-
+/**
+ * This class tests all graphs of a given number of vertices, n, for the property of n-strungness but no Hamiltonian cycle.
+ */
 public class HamiltonianMultithreaded {
     /**
-     * Find the max of the elements of an array.
+     * Tests all graphs of a certain number of vertices. Returns true if it finds an n-strung graph with no Hamiltonian cycle,
+     * and prints the graph. Otherwise, returns false. Each graph is tested in its own thread for a faster runtime.
      *
-     * @param numVertices integer to max
+     * @param numVertices integer
      * @return true/false
      * @throws InterruptedException shouldn't happen
      */
@@ -72,7 +82,6 @@ public class HamiltonianMultithreaded {
         boolean ans = false;
         
         int numThreads = (int) Math.pow((double) 2, (double) (numVertices*numVertices-3*numVertices)/2);
-        // Create and start threads.
         HamiltonianThread[] ts = new HamiltonianThread[numThreads];
         for (int i = 0; i < numThreads; i++) {
             ts[i] = new HamiltonianThread(numVertices, i);
@@ -80,7 +89,6 @@ public class HamiltonianMultithreaded {
         }
 
         int counterExample = -1;
-        // Wait for the threads to finish and sum their results.
         for (int i = 0; i < numThreads; i++) {
             ts[i].join();
             if (ts[i].getAns() == true) {
@@ -96,6 +104,13 @@ public class HamiltonianMultithreaded {
         return ans;
     }
     
+    /**
+     * Helper function for the createMatrix function. This cleans up the binary numbers to have the correct amount
+     * of digits by adding 0's to the left of the string.
+     * @param inputString
+     * @param length
+     * @return
+     */
     public static String padLeftZeros(String inputString, int length) {
 		if (inputString.length() >= length) {
 			return inputString;
@@ -109,6 +124,19 @@ public class HamiltonianMultithreaded {
 		return sb.toString();
 	  }
     
+    /**
+     * Takes in an ID and number of vertices to have in the graph. Generates a graph by converting the ID to a
+     * binary number, assigning each entry of the adjacency matrix to a digit of the binary number. For
+     * optimization, entries along the diagonal are always set to 0, entries to the immediate left and right of
+     * the diagonal are set to 1 creating a single Hamiltonian path, since we know there must be at least one path,
+     * so we assume it is this one without loss of generality. Finally the top right corner and bottom left corner
+     * are set to 0, so that this Hamiltonian path does not form a cycle. Finally, we only change entries to the
+     * right of the diagonal, since this is an undirected graph, so we reflect edges over the diagonal to finish
+     * our adjacency matrix.
+     * @param numVertices integer
+     * @param id integer
+     * @return graph integer matrix
+     */
     public static int[][] createMatrix(int numVertices, int id) {
         int[][] graph = new int[numVertices][numVertices];
 		for (int i = 0; i < numVertices; i++) {
@@ -118,9 +146,7 @@ public class HamiltonianMultithreaded {
 		for (int i = 0; i < numVertices - 1; i++) {
 			graph[i][i+1] = 1;
 		  graph[i+1][i] = 1;
-		  //graph[0][numVertices-1] = false, graph[numVertices-1][0] = false
         }
-        //System.out.println(graph);
 	
 		int stringLength = (numVertices*numVertices-3*numVertices)/2;
 		String binary = Integer.toBinaryString(id);
@@ -128,7 +154,6 @@ public class HamiltonianMultithreaded {
 		int insert = stringLength - numVertices + 3;
 		binary = binary.substring(0, insert) + "0" + binary.substring(insert);
 		stringLength++;
-		//System.out.println(binary);
 
 		int k = 0;
 		for (int i = 0; i < numVertices - 2; i++ ) {
@@ -140,66 +165,22 @@ public class HamiltonianMultithreaded {
 		}
 		return graph;
     }
+
     public static void main(String[] args) {
+        int numVertices = 8;
         try {
-            System.out.println(HamiltonianMultithreaded.hamiltonian(6));
+            System.out.println(HamiltonianMultithreaded.hamiltonian(numVertices));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        /*
-        HamiltonianCycle hamiltonian = new HamiltonianCycle();
-        int[][] graph = new int[4][4];
-        int[] list = new int[4];
-        list[0]=0;
-        list[1]=0;
-        list[2]=0;
-        list[3]=0;
-        graph[0] = list;
-        graph[1] = list;
-        graph[2] = list;
-        graph[3] = list;
-        int numVertices = 4;
-        if (!hamiltonian.hamCycle(graph)) {
-            List<Edge> edges = new ArrayList<Edge>();
-            for (int vertex = 0; vertex < numVertices; vertex++) {
-                for (int i = 0; i < graph.length; i++) {
-                    for (int j = 0; j < graph.length; j++) {
-                        if (graph[i][j] == 1) {
-                            edges.add(new Edge(i,j));
-                        }
-                        // Set number of vertices in the graph
-                
-                        // create a graph from edges
-                        Graph g = new Graph(edges, numVertices);
-                
-                        // starting node
-                        int start = vertex;
-                
-                        // add starting node to the path
-                        List<Integer> path = new ArrayList<>();
-                        path.add(start);
-                
-                        // mark start node as visited
-                        boolean[] visited = new boolean[numVertices];
-                        visited[start] = true;
-                
-                        if (!checkHamiltonianPaths(g, start, visited, path, numVertices)); {
-                            System.out.println("false");
-                        }                    
-                    }
-                }
-            }
-        } else {
-            System.out.println("false");
-        }
-        System.out.println("true"); */
     } 
 }
 
-
-// https://www.geeksforgeeks.org/hamiltonian-cycle-backtracking-6/
-/* Java program for solution of Hamiltonian Cycle problem 
-using backtracking */
+/** 
+ * Class for checking a graph for Hamiltonian cycles using the backtracking algorithm.
+ * This is a modified version of the code found at:
+ * https://www.geeksforgeeks.org/hamiltonian-cycle-backtracking-6/
+ */
 class HamiltonianCycle 
 { 
 	int V; 
@@ -293,81 +274,40 @@ class HamiltonianCycle
 			//System.out.println("\nSolution does not exist"); 
 			return false; 
 		} 
-
-		printSolution(path); 
 		return true; 
 	} 
-
-	/* A utility function to print solution */
-	void printSolution(int path[]) 
-	{ /*
-		System.out.println("Solution Exists: Following" + " is one Hamiltonian Cycle"); 
-		for (int i = 0; i < V; i++) 
-			System.out.print(" " + path[i] + " "); 
-
-		// Let us print the first vertex again to show the 
-		// complete cycle 
-		System.out.println(" " + path[0] + " "); */
-	} 
-/*
-	// driver program to test above function 
-	public static void main(String args[]) 
-	{ 
-		HamiltonianCycle hamiltonian = 
-								new HamiltonianCycle(); 
-		/* Let us create the following graph 
-		(0)--(1)--(2) 
-			| / \ | 
-			| / \ | 
-			| /	 \ | 
-		(3)-------(4) 
-		int graph1[][] = {{0, 1, 0, 1, 0}, 
-			{1, 0, 1, 1, 1}, 
-			{0, 1, 0, 0, 1}, 
-			{1, 1, 0, 0, 1}, 
-			{0, 1, 1, 1, 0}, 
-		}; 
-
-		// Print the solution 
-		hamiltonian.hamCycle(graph1); 
-
-		/* Let us create the following graph 
-		(0)--(1)--(2) 
-			| / \ | 
-			| / \ | 
-			| /	 \ | 
-		(3)	 (4) 
-		int graph2[][] = {{0, 1, 0, 1, 0}, 
-			{1, 0, 1, 1, 1}, 
-			{0, 1, 0, 0, 1}, 
-			{1, 1, 0, 0, 0}, 
-			{0, 1, 1, 0, 0}, 
-		}; 
-
-		// Print the solution 
-		hamiltonian.hamCycle(graph2); 
-	} */
 } 
-// This code is contributed by Abhishek Shankhadhar 
- 
-// data structure to store graph edges
+
+/**
+ * data structure to store graph edges
+ */ 
 class Edge
 {
     int source, dest;
  
+    /**
+     * Initializing function
+     * @param source
+     * @param dest
+     */
     public Edge(int source, int dest) {
         this.source = source;
         this.dest = dest;
     }
 }
  
-// class to represent a graph object
+/**
+ * Class to represent a graph object.
+ */
 class Graph
 {
-    // A List of Lists to represent an adjacency list
     List<List<Integer>> adjList = null;
  
-    // Constructor
+    /**
+     * Initializer
+     * @param edges
+     * @param N
+     */
     Graph(List<Edge> edges, int N)
     {
         adjList = new ArrayList<>();
@@ -387,9 +327,22 @@ class Graph
         }
     }
 }
- 
+
+/**
+ * Class that checks for a Hamiltonian path starting at a certain vertex using the backtracking algorithm.
+ */
 class HamiltonianPaths
 {
+    /**
+     * Recursive algorithm that tries to add unvisited vertices to the path and then recursively call itself
+     * on each possible addition to the current path.
+     * @param g
+     * @param v
+     * @param visited
+     * @param path
+     * @param N
+     * @return true/false
+     */
     public static boolean checkHamiltonianPaths(Graph g, int v, boolean[] visited, List<Integer> path, int N) {
         // if all the vertices are visited, then
         // hamiltonian path exists
