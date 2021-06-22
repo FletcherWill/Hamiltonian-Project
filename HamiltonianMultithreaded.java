@@ -100,10 +100,9 @@ public class HamiltonianMultithreaded {
     }
 }
 
-
-// https://www.geeksforgeeks.org/hamiltonian-cycle-backtracking-6/
+/* The following code is sourced from https://www.geeksforgeeks.org/hamiltonian-cycle-backtracking-6/ */
 /* Java program for solution of Hamiltonian Cycle problem 
-using backtracking */
+using backtracking algorithm*/
 class HamiltonianCycle 
 { 
 	final int V = 5; 
@@ -210,46 +209,8 @@ class HamiltonianCycle
 		// complete cycle 
 		System.out.println(" " + path[0] + " "); 
 	} 
-/*
-	// driver program to test above function 
-	public static void main(String args[]) 
-	{ 
-		HamiltonianCycle hamiltonian = 
-								new HamiltonianCycle(); 
-		/* Let us create the following graph 
-		(0)--(1)--(2) 
-			| / \ | 
-			| / \ | 
-			| /	 \ | 
-		(3)-------(4) 
-		int graph1[][] = {{0, 1, 0, 1, 0}, 
-			{1, 0, 1, 1, 1}, 
-			{0, 1, 0, 0, 1}, 
-			{1, 1, 0, 0, 1}, 
-			{0, 1, 1, 1, 0}, 
-		}; 
-
-		// Print the solution 
-		hamiltonian.hamCycle(graph1); 
-
-		/* Let us create the following graph 
-		(0)--(1)--(2) 
-			| / \ | 
-			| / \ | 
-			| /	 \ | 
-		(3)	 (4) 
-		int graph2[][] = {{0, 1, 0, 1, 0}, 
-			{1, 0, 1, 1, 1}, 
-			{0, 1, 0, 0, 1}, 
-			{1, 1, 0, 0, 0}, 
-			{0, 1, 1, 0, 0}, 
-		}; 
-
-		// Print the solution 
-		hamiltonian.hamCycle(graph2); 
-	} */
 } 
-// This code is contributed by Abhishek Shankhadhar 
+ 
  
 // data structure to store graph edges
 class Edge
@@ -303,54 +264,26 @@ class HamiltonianPaths
         // to a solution or not
         for (int w : g.adjList.get(v))
         {
-            // process only unvisited vertices as hamiltonian
-            // path visits each vertex exactly once
-            if (!visited[w])
-            {
-                visited[w] = true;
-                path.add(w);
- 
-                // check if adding vertex w to the path leads
-                // to solution or not
-                if (checkHamiltonianPaths(g, w, visited, path, N)) {
-                    return true;
-                }
- 
-                // Backtrack
-                visited[w] = false;
-                path.remove(path.size()-1);
-            }
+          // process only unvisited vertices as hamiltonian
+          // path visits each vertex exactly once
+          if (!visited[w])
+          {
+              visited[w] = true;
+              path.add(w);
+
+              // check if adding vertex w to the path leads
+              // to solution or not
+              if (checkHamiltonianPaths(g, w, visited, path, N)) {
+                  return true;
+              }
+
+              // Backtrack
+              visited[w] = false;
+              path.remove(path.size()-1);
+          }
         }
-    return false;
+      return false;
     }
-/*
-    public static void main(String[] args)
-    {
-        // List of graph edges as per above diagram
-        List<Edge> edges = Arrays.asList(
-                new Edge(0, 1), new Edge(0, 2), new Edge(0, 3),
-                new Edge(1, 2), new Edge(1, 3), new Edge(2, 3)
-        );
- 
-        // Set number of vertices in the graph
-        final int N = 4;
- 
-        // create a graph from edges
-        Graph g = new Graph(edges, N);
- 
-        // starting node
-        int start = 0;
- 
-        // add starting node to the path
-        List<Integer> path = new ArrayList<>();
-        path.add(start);
- 
-        // mark start node as visited
-        boolean[] visited = new boolean[N];
-        visited[start] = true;
- 
-        printAllHamiltonianPaths(g, start, visited, path, N);
-    } */
 
     public static void main(String[] args) {
         //System.out.println(HamiltonianMultithreaded.hamiltonian(4));
