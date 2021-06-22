@@ -280,6 +280,7 @@ class HamiltonianCycle
 
 /**
  * data structure to store graph edges
+ * Following code is modified version of code found at: https://www.techiedelight.com/print-all-hamiltonian-path-present-in-a-graph/.
  */ 
 class Edge
 {
