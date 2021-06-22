@@ -1,2 +1,2 @@
 # Hamiltonian-Project
-Finds graphs with no Hamiltonian Cycle but a Hamiltonian path from every vertex.
+This code was written as part of a research project conducted by Erik Carlson, Will Fletcher, and MurphyKate Montee at Carleton College. This program takes in a number of vertices and then finds graphs with no Hamiltonian Cycle where every vertex is the start of a Hamiltonian path. It tests every possible graph for the given number of vertices and returns whether or not such a graph was found. To set the number of vertices, edit the variable on line 5 of HamiltonianMultithreaded.
